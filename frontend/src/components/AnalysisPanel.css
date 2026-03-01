@@ -1,0 +1,29 @@
+.analysis-container {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.analysis-card {
+  flex: 1;
+  background: var(--card-white);
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  transition: 0.3s ease;
+  border-top: 5px solid var(--wealth-green);
+}
+
+.analysis-card:hover {
+  transform: translateY(-5px);
+}
+
+.analysis-card h3 {
+  color: var(--corporate-blue);
+  margin-bottom: 10px;
+}
+
+.analysis-card p {
+  font-size: 24px;
+  font-weight: 600;
+}

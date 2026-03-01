@@ -1,0 +1,17 @@
+# Virtual environment
+venvt/
+venv/
+env/
+
+# Node / React
+node_modules/
+build/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Django
+*.sqlite3

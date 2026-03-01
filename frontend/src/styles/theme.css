@@ -1,0 +1,17 @@
+:root {
+  --corporate-blue: #0A1F44;
+  --wealth-green: #0F9D58;
+  --golden: #D4AF37;
+  --risk-red: #D32F2F;
+  --dark-bg: #0E1117;
+  --card-bg: #1C2331;
+  --text-light: #F5F5F5;
+  --muted: #9CA3AF;
+}
+
+body {
+  margin: 0;
+  background-color: var(--dark-bg);
+  color: var(--text-light);
+  font-family: "Segoe UI", sans-serif;
+}

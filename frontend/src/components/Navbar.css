@@ -1,0 +1,47 @@
+.navbar {
+  background: linear-gradient(90deg, var(--corporate-blue), var(--wealth-green));
+  padding: 18px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--golden-invest);
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 35px;
+}
+
+.nav-links span {
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s ease;
+  position: relative;
+}
+
+.nav-links span:hover {
+  color: var(--golden-invest);
+}
+
+.nav-links span::after {
+  content: "";
+  width: 0%;
+  height: 2px;
+  background: var(--golden-invest);
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  transition: 0.3s;
+}
+
+.nav-links span:hover::after {
+  width: 100%;
+}

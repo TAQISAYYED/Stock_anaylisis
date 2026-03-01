@@ -1,0 +1,42 @@
+.stocks-container {
+  background: var(--card-white);
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.stocks-container h2 {
+  color: var(--corporate-blue);
+  margin-bottom: 20px;
+}
+
+.stocks-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.stocks-table th {
+  background-color: var(--corporate-blue);
+  color: white;
+  padding: 14px;
+  text-align: left;
+}
+
+.stocks-table td {
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.stocks-table tr:hover {
+  background-color: #f0f4ff;
+}
+
+.price-green {
+  color: var(--wealth-green);
+  font-weight: 600;
+}
+
+.pe-blue {
+  color: var(--corporate-blue);
+  font-weight: 600;
+}

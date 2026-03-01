@@ -1,0 +1,12 @@
+.portfolio-dropdown {
+  width: 300px;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+}
+
+.portfolio-stocks {
+  margin-top: 30px;
+}

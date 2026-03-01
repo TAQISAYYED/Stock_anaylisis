@@ -1,0 +1,35 @@
+.portfolio-container {
+  padding: 50px 60px;
+}
+
+.portfolio-form {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.portfolio-form input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  width: 300px;
+}
+
+.portfolio-form button {
+  padding: 12px 20px;
+  background-color: var(--wealth-green);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.portfolio-form button:hover {
+  background-color: var(--corporate-blue);
+}
+
+.portfolio-list li {
+  margin-bottom: 10px;
+  font-weight: 500;
+}

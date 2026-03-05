@@ -1,51 +1,67 @@
-from rest_framework.views import APIView
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
-from django.shortcuts import get_object_or_404
+
 from .models import Stock
 from .serializers import StockSerializer
-import yfinance as yf
 
 
-class StockListCreateView(APIView):
+class StockViewSet(viewsets.ModelViewSet):
+    serializer_class = StockSerializer
+    permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        portfolio_id = request.query_params.get('portfolio')
-
+    def get_queryset(self):
+        queryset = Stock.objects.filter(portfolio__user=self.request.user)
+        portfolio_id = self.request.query_params.get("portfolio")
         if portfolio_id:
-            stocks = Stock.objects.filter(portfolio_id=portfolio_id)
-        else:
-            stocks = Stock.objects.all()
+            queryset = queryset.filter(portfolio_id=portfolio_id)
+        return queryset
 
-        serializer = StockSerializer(stocks, many=True)
-        return Response(serializer.data)
+    def perform_create(self, serializer):
+        serializer.save()
 
-    def post(self, request):
-        serializer = StockSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    @action(detail=False, methods=["get"], url_path="summary")
+    def summary(self, request):
+        """
+        GET /api/stocks/summary/?portfolio=1
+        Returns all stocks with live data + highest/lowest price in portfolio.
+        """
+        portfolio_id = request.query_params.get("portfolio")
+        if not portfolio_id:
+            return Response(
+                {"error": "portfolio query param is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
+        stocks = Stock.objects.filter(
+            portfolio__user=request.user,
+            portfolio_id=portfolio_id
+        )
 
-class StockDetailView(APIView):
+        if not stocks.exists():
+            return Response({
+                "total_stocks":  0,
+                "highest_price": None,
+                "lowest_price":  None,
+                "stocks":        [],
+            })
 
-    def get(self, request, pk):
-        stock = get_object_or_404(Stock, pk=pk)
-        serializer = StockSerializer(stock)
-        return Response(serializer.data)
+        serialized = StockSerializer(stocks, many=True).data
 
-    def put(self, request, pk):
-        stock = get_object_or_404(Stock, pk=pk)
-        serializer = StockSerializer(stock, data=request.data, partial=True)
+        # portfolio-level highest / lowest
+        priced = [
+            (s["current_price"], s["ticker"])
+            for s in serialized
+            if s["current_price"] is not None
+        ]
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+        highest = {"value": max(priced, key=lambda x: x[0])[0], "ticker": max(priced, key=lambda x: x[0])[1]} if priced else None
+        lowest  = {"value": min(priced, key=lambda x: x[0])[0], "ticker": min(priced, key=lambda x: x[0])[1]} if priced else None
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        stock = get_object_or_404(Stock, pk=pk)
-        stock.delete()
-        return Response({"message": "Deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({
+            "total_stocks":  stocks.count(),
+            "highest_price": highest,
+            "lowest_price":  lowest,
+            "stocks":        serialized,
+        })

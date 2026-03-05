@@ -1,9 +1,15 @@
 import axios from "axios";
 
-const API = axios.create({
-  baseURL: "http://localhost:8000/api",
+const api = axios.create({
+  baseURL: "http://127.0.0.1:8000",
 });
 
-export const getSectors = () => API.get("/sectors/");
-export const getStocks = (sectorId) => API.get(`/stocks/${sectorId}/`);
-export const getAnalysis = (stockId) => API.get(`/analysis/${stockId}/`);
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("access");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export default api;

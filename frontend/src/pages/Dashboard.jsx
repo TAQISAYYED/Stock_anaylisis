@@ -1,56 +1,108 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-
-import Navbar from "../components/Navbar";
+import api from "../services/api";
 import AnalysisPanel from "../components/AnalysisPanel";
 import PortfolioChart from "../components/PortfolioChart";
 import StocksCard from "../components/StocksCard";
-
 import "./Dashboard.css";
 
 export default function Dashboard() {
-
   const [portfolios, setPortfolios] = useState([]);
   const [stocks, setStocks] = useState([]);
-
-  const API = "http://127.0.0.1:8000/api";
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
-      const portfolioRes = await axios.get(`${API}/portfolio/`);
-      const stockRes = await axios.get(`${API}/stocks/`);
-
-      setPortfolios(portfolioRes.data);
-      setStocks(stockRes.data);
-
+      const [portfolioRes, stockRes] = await Promise.all([
+        api.get("/api/portfolio/portfolios/"),
+        api.get("/api/stocks/"),
+      ]);
+      setPortfolios(portfolioRes.data.results ?? portfolioRes.data);
+      setStocks(stockRes.data.results ?? stockRes.data);
     } catch (error) {
-      console.error("API Error:", error);
+      console.error("Dashboard fetch error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const totalPortfolios = portfolios.length;
+  const totalStocks = stocks.length;
+  const priced = stocks.filter((s) => s.current_price);
+  const gainers = stocks.filter((s) => s.day_change_pct > 0).length;
+  const losers  = stocks.filter((s) => s.day_change_pct < 0).length;
+
   return (
-    <div className="dashboard-page">
+    <div className="db-root">
+      <div className="db-bg-glow" />
 
-      <Navbar />
+      <div className="db-inner">
 
-      <div className="dashboard-container">
+        {/* ── Page header ── */}
+        <div className="db-header">
+          <div>
+            <p className="db-label">OVERVIEW</p>
+            <h1 className="db-title">Investment Dashboard</h1>
+          </div>
+          <span className="db-live-badge">
+            <span className="db-live-dot" /> NSE Live
+          </span>
+        </div>
 
-        <h1 className="dashboard-title">
-          Corporate Investment Dashboard
-        </h1>
+        {/* ── Top stats ── */}
+        {!loading && (
+          <div className="db-stats-row">
+            <div className="db-stat">
+              <p className="db-stat-label">Portfolios</p>
+              <p className="db-stat-value">{totalPortfolios}</p>
+            </div>
+            <div className="db-stat">
+              <p className="db-stat-label">Total Stocks</p>
+              <p className="db-stat-value">{totalStocks}</p>
+            </div>
+            <div className="db-stat">
+              <p className="db-stat-label">With Live Price</p>
+              <p className="db-stat-value">{priced.length}</p>
+            </div>
+            <div className="db-stat green">
+              <p className="db-stat-label">Gainers</p>
+              <p className="db-stat-value" style={{ color: "var(--db-green)" }}>
+                {gainers}↑
+              </p>
+            </div>
+            <div className="db-stat red">
+              <p className="db-stat-label">Losers</p>
+              <p className="db-stat-value" style={{ color: "var(--db-red)" }}>
+                {losers}↓
+              </p>
+            </div>
+          </div>
+        )}
 
-        <AnalysisPanel portfolios={portfolios} stocks={stocks} />
-
-        <PortfolioChart portfolios={portfolios} />
-
-        <StocksCard stocks={stocks} />
-
+        {/* ── Loading state ── */}
+        {loading ? (
+          <div className="db-loading">
+            <div className="db-spinner" />
+            <p>Loading dashboard…</p>
+          </div>
+        ) : (
+          <div className="db-sections">
+            <div className="db-section">
+              <AnalysisPanel portfolios={portfolios} stocks={stocks} />
+            </div>
+            <div className="db-section">
+              <PortfolioChart portfolios={portfolios} />
+            </div>
+            <div className="db-section">
+              <StocksCard stocks={stocks} portfolioId={null} refreshStocks={fetchData} />
+            </div>
+          </div>
+        )}
       </div>
-
     </div>
   );
 }

@@ -1,12 +1,13 @@
 from rest_framework import serializers
 from .models import Portfolio
+from stocks.models import Stock
+from stocks.serializers import StockSerializer
+
 
 class PortfolioSerializer(serializers.ModelSerializer):
-    stock_count = serializers.SerializerMethodField()
+    stocks = StockSerializer(many=True, read_only=True)
 
     class Meta:
         model = Portfolio
-        fields = ['id', 'name', 'description', 'icon', 'stock_count']
-
-    def get_stock_count(self, obj):
-        return obj.stocks.count()
+        fields = ["id", "name", "created_at", "stocks"]
+        read_only_fields = ["user", "created_at"]

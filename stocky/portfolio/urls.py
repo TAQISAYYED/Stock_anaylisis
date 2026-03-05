@@ -1,7 +1,7 @@
-from django.urls import path
-from .views import PortfolioListCreateView, PortfolioDetailView
+from rest_framework.routers import DefaultRouter
+from .views import PortfolioViewSet
 
-urlpatterns = [
-    path('', PortfolioListCreateView.as_view(), name='portfolio-list'),
-    path('<int:pk>/', PortfolioDetailView.as_view(), name='portfolio-detail'),
-]
+router = DefaultRouter()
+router.register(r"portfolios", PortfolioViewSet, basename="portfolio")  # ✅ must be "portfolios"
+
+urlpatterns = router.urls

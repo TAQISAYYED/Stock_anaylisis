@@ -1,0 +1,205 @@
+.gs-page {
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+  min-height: 100vh;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.gs-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+/* LOADING */
+.gs-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: #FFD700;
+  font-size: 18px;
+  background: #0f0f1a;
+}
+
+.gs-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #333;
+  border-top: 4px solid #FFD700;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ERROR */
+.gs-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: #ff4444;
+  font-size: 18px;
+  background: #0f0f1a;
+}
+
+/* HEADER */
+.gs-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.gs-header h1 {
+  font-size: 36px;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+
+.gs-header p {
+  color: #888;
+  font-size: 15px;
+}
+
+/* STATS CARDS */
+.gs-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.gs-card {
+  background: #1a1a2e;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.gs-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.gs-card.gold { border: 2px solid #FFD700; }
+.gs-card.silver { border: 2px solid #C0C0C0; }
+.gs-card.blue { border: 2px solid #4FC3F7; }
+.gs-card.green { border: 2px solid #4CAF50; }
+
+.gs-card-icon { font-size: 28px; margin-bottom: 10px; }
+
+.gs-card.gold .gs-card-value { color: #FFD700; font-size: 26px; font-weight: bold; }
+.gs-card.silver .gs-card-value { color: #C0C0C0; font-size: 26px; font-weight: bold; }
+.gs-card.blue .gs-card-value { color: #4FC3F7; font-size: 26px; font-weight: bold; }
+.gs-card.green .gs-card-value { color: #4CAF50; font-size: 26px; font-weight: bold; }
+
+.gs-card-label { color: #888; margin-top: 8px; font-size: 14px; }
+
+/* CHART BOXES */
+.gs-chart-box {
+  background: #1a1a2e;
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 30px;
+  border: 1px solid #2a2a3e;
+  transition: box-shadow 0.3s ease;
+}
+
+.gs-chart-box:hover {
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.1);
+}
+
+.gs-chart-box h2 {
+  color: #FFD700;
+  font-size: 18px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #2a2a3e;
+}
+
+/* HEATMAP */
+.gs-heatmap { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+
+.gs-heatmap-grid {
+  display: grid;
+  grid-template-columns: 100px 140px 140px;
+  gap: 6px;
+}
+
+.gs-heatmap-cell {
+  padding: 14px;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.gs-heatmap-cell.header { background: transparent; color: #888; }
+.gs-heatmap-cell.value { background: rgba(255, 215, 0, 0.85); color: #000; font-size: 18px; }
+
+.gs-heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #888;
+  font-size: 13px;
+}
+
+.gs-heatmap-bar {
+  width: 200px;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(255,215,0,1));
+}
+
+/* TABLE */
+.gs-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gs-table thead tr {
+  border-bottom: 2px solid #FFD700;
+}
+
+.gs-table th {
+  padding: 14px 12px;
+  text-align: left;
+  color: #FFD700;
+  font-size: 14px;
+}
+
+.gs-table tbody tr {
+  border-bottom: 1px solid #2a2a3e;
+  transition: background 0.2s ease;
+}
+
+.gs-table tbody tr:hover { background: #2a2a3e; }
+
+.gs-table td {
+  padding: 14px 12px;
+  color: #ccc;
+  font-size: 14px;
+}
+
+.gold-text { color: #FFD700 !important; font-weight: bold; }
+.silver-text { color: #C0C0C0 !important; font-weight: bold; }
+
+/* BADGES */
+.gs-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.gs-badge.up { background: rgba(76, 175, 80, 0.2); color: #4CAF50; }
+.gs-badge.neutral { background: rgba(255, 193, 7, 0.2); color: #FFC107; }

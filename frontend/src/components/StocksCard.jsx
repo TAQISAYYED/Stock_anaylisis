@@ -2,11 +2,11 @@ import { useState } from "react";
 import api from "../services/api";
 import "./StocksCard.css";
 
-export default function StocksCard({ stocks, portfolioId, refreshStocks, onDeleteStock }) {
-  const [newSymbol, setNewSymbol] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [deletingId, setDeletingId] = useState(null);
+export default function StocksCard({ stocks, portfolioId, refreshStocks }) {
+  const [newSymbol, setNewSymbol]   = useState("");
+  const [loading,   setLoading]     = useState(false);
+  const [error,     setError]       = useState("");
+  const [deletingId,setDeletingId]  = useState(null);
 
   const handleAddStock = async () => {
     if (!newSymbol.trim() || !portfolioId) return;
@@ -14,18 +14,16 @@ export default function StocksCard({ stocks, portfolioId, refreshStocks, onDelet
     setError("");
     try {
       await api.post("/api/stocks/", {
-        ticker: newSymbol.trim().toUpperCase(),
+        ticker:       newSymbol.trim().toUpperCase(),
         company_name: newSymbol.trim().toUpperCase(),
-        portfolio: portfolioId,
+        portfolio:    portfolioId,
       });
       setNewSymbol("");
       refreshStocks();
     } catch (err) {
       console.error(err);
       setError("Invalid symbol or already added. Try again.");
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   const handleDelete = async (stockId) => {
@@ -33,37 +31,27 @@ export default function StocksCard({ stocks, portfolioId, refreshStocks, onDelet
     try {
       await api.delete(`/api/stocks/${stockId}/`);
       refreshStocks();
-    } catch (err) {
-      console.error("Delete error:", err);
-    } finally {
-      setDeletingId(null);
-    }
+    } catch (err) { console.error("Delete error:", err); }
+    finally { setDeletingId(null); }
   };
 
-  const fmt = (val) =>
-    val != null ? `₹${Number(val).toLocaleString("en-IN")}` : "—";
-
-  const fmtPct = (val) => {
-    if (val == null) return "—";
-    const sign = val > 0 ? "+" : "";
-    return `${sign}${val.toFixed(2)}%`;
-  };
-
-  const fmtMktCap = (val) => {
-    if (!val) return "—";
-    if (val >= 1e12) return `₹${(val / 1e12).toFixed(2)}T`;
-    if (val >= 1e9)  return `₹${(val / 1e9).toFixed(2)}B`;
-    if (val >= 1e7)  return `₹${(val / 1e7).toFixed(2)}Cr`;
-    return `₹${val.toLocaleString("en-IN")}`;
+  const fmt    = (v) => v != null ? `₹${Number(v).toLocaleString("en-IN")}` : "—";
+  const fmtPct = (v) => { if (v == null) return "—"; return `${v > 0 ? "+" : ""}${v.toFixed(2)}%`; };
+  const fmtMkt = (v) => {
+    if (!v) return "—";
+    if (v >= 1e12) return `₹${(v/1e12).toFixed(2)}T`;
+    if (v >= 1e9)  return `₹${(v/1e9).toFixed(2)}B`;
+    if (v >= 1e7)  return `₹${(v/1e7).toFixed(2)}Cr`;
+    return `₹${v.toLocaleString("en-IN")}`;
   };
 
   return (
     <div className="sc-wrap">
 
-      {/* ── Add stock bar ── */}
+      {/* Add stock bar */}
       <div className="sc-add-bar">
         <div className="sc-add-left">
-          <span className="sc-add-label">ADD STOCK</span>
+          <span className="sc-add-label">Add Stock</span>
           <div className="sc-input-wrap">
             <span className="sc-input-prefix">NSE:</span>
             <input
@@ -83,19 +71,15 @@ export default function StocksCard({ stocks, portfolioId, refreshStocks, onDelet
           onClick={handleAddStock}
           disabled={loading || !newSymbol.trim()}
         >
-          {loading ? (
-            <span className="sc-btn-spinner" />
-          ) : (
-            <>＋ Add Stock</>
-          )}
+          {loading ? <span className="sc-btn-spinner" /> : <>＋ Add Stock</>}
         </button>
       </div>
 
-      {/* ── Table ── */}
+      {/* Table */}
       <div className="sc-table-wrap">
         {stocks.length === 0 ? (
           <div className="sc-empty">
-            <p className="sc-empty-icon">◈</p>
+            <p className="sc-empty-icon">📊</p>
             <p>No stocks in this portfolio yet.</p>
             <p className="sc-empty-sub">Add a stock symbol above to get started.</p>
           </div>
@@ -103,29 +87,26 @@ export default function StocksCard({ stocks, portfolioId, refreshStocks, onDelet
           <table className="sc-table">
             <thead>
               <tr>
-                <th>SYMBOL</th>
-                <th>PRICE</th>
-                <th>DAY CHG</th>
-                <th>DAY HIGH</th>
-                <th>DAY LOW</th>
-                <th>52W HIGH</th>
-                <th>52W LOW</th>
+                <th>Symbol</th>
+                <th>Price</th>
+                <th>Day Chg</th>
+                <th>Day High</th>
+                <th>Day Low</th>
+                <th>52W High</th>
+                <th>52W Low</th>
                 <th>P/E</th>
-                <th>MKT CAP</th>
+                <th>Mkt Cap</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {stocks.map((stock, i) => {
-                const positive = stock.day_change_pct > 0;
-                const negative = stock.day_change_pct < 0;
+                const pos = stock.day_change_pct > 0;
+                const neg = stock.day_change_pct < 0;
                 return (
-                  <tr
-                    key={stock.id}
-                    style={{ animationDelay: `${i * 40}ms` }}
-                    className="sc-row"
-                  >
-                    {/* Symbol */}
+                  <tr key={stock.id} className="sc-row"
+                    style={{ animationDelay: `${i * 40}ms` }}>
+
                     <td>
                       <div className="sc-symbol-cell">
                         <span className="sc-ticker">{stock.ticker}</span>
@@ -137,55 +118,25 @@ export default function StocksCard({ stocks, portfolioId, refreshStocks, onDelet
                       </div>
                     </td>
 
-                    {/* Price */}
                     <td>
-                      <span
-                        className={`sc-price ${
-                          stock.current_price
-                            ? positive
-                              ? "green"
-                              : negative
-                              ? "red"
-                              : ""
-                            : "na"
-                        }`}
-                      >
+                      <span className={`sc-price ${stock.current_price ? (pos?"green":neg?"red":"") : "na"}`}>
                         {stock.current_price ? fmt(stock.current_price) : "N/A"}
                       </span>
                     </td>
 
-                    {/* Day change % */}
                     <td>
-                      <span
-                        className={`sc-change ${
-                          positive ? "green" : negative ? "red" : "na"
-                        }`}
-                      >
+                      <span className={`sc-change ${pos?"green":neg?"red":"na"}`}>
                         {fmtPct(stock.day_change_pct)}
                       </span>
                     </td>
 
-                    {/* Day High */}
                     <td className="sc-num">{fmt(stock.day_high)}</td>
-
-                    {/* Day Low */}
                     <td className="sc-num">{fmt(stock.day_low)}</td>
-
-                    {/* 52W High */}
                     <td className="sc-num green-soft">{fmt(stock.week_52_high)}</td>
-
-                    {/* 52W Low */}
                     <td className="sc-num red-soft">{fmt(stock.week_52_low)}</td>
+                    <td className="sc-num">{stock.pe_ratio ?? "—"}</td>
+                    <td className="sc-num">{fmtMkt(stock.market_cap)}</td>
 
-                    {/* PE */}
-                    <td className="sc-num">
-                      {stock.pe_ratio != null ? stock.pe_ratio : "—"}
-                    </td>
-
-                    {/* Market Cap */}
-                    <td className="sc-num">{fmtMktCap(stock.market_cap)}</td>
-
-                    {/* Delete */}
                     <td>
                       <button
                         className="sc-delete-btn"

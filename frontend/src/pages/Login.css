@@ -1,17 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap');
 
 .ln-root {
   min-height: 100vh;
-  background: #080a10;
+  background: #f7f8fc;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'DM Mono', monospace;
+  font-family: 'Manrope', sans-serif;
   padding: 1.5rem;
   position: relative;
   overflow: hidden;
 }
 
+/* Subtle background decoration */
 .ln-bg-glow {
   position: fixed;
   top: -200px;
@@ -19,42 +21,44 @@
   transform: translateX(-50%);
   width: 700px;
   height: 400px;
-  background: radial-gradient(ellipse, rgba(240, 192, 64, 0.07) 0%, transparent 65%);
+  background: radial-gradient(ellipse, rgba(99,102,241,0.07) 0%, transparent 65%);
   pointer-events: none;
 }
 
+/* ── Card ─────────────────────────────────────────────── */
 .ln-card {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 400px;
-  background: #111520;
-  border: 1px solid #1a1f2e;
+  max-width: 420px;
+  background: #ffffff;
+  border: 1.5px solid #e8eaf2;
   border-radius: 20px;
-  padding: 2.5rem 2.2rem;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
-  animation: cardIn 0.3s ease;
+  padding: 2.8rem 2.4rem;
+  box-shadow: 0 8px 40px rgba(15,17,36,0.10);
+  animation: ln-cardIn 0.3s ease;
 }
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(20px); }
+@keyframes ln-cardIn {
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* indigo top accent bar */
 .ln-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #f0c040, #00d48c);
+  height: 3px;
+  background: linear-gradient(90deg, #6366f1, #10b981);
   border-radius: 20px 20px 0 0;
 }
 
+/* ── Logo ─────────────────────────────────────────────── */
 .ln-logo {
   font-family: 'Syne', sans-serif;
   font-weight: 800;
   font-size: 1.1rem;
-  letter-spacing: -0.02em;
-  color: #e2e8f8;
+  color: #0f1124;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -65,43 +69,48 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #f0c040;
+  background: #6366f1;
   display: inline-block;
-  animation: pulse 2s ease-in-out infinite;
+  animation: ln-pulse 2s ease-in-out infinite;
 }
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.5; transform: scale(1.35); }
+@keyframes ln-pulse {
+  0%,100% { opacity: 1; transform: scale(1);    box-shadow: 0 0 0 0   rgba(99,102,241,0.4); }
+  50%      { opacity: 0.7; transform: scale(1.3); box-shadow: 0 0 0 4px rgba(99,102,241,0); }
 }
 
+/* ── Heading ──────────────────────────────────────────── */
 .ln-title {
   font-family: 'Syne', sans-serif;
-  font-size: 1.7rem;
+  font-size: 1.75rem;
   font-weight: 800;
-  letter-spacing: -0.03em;
-  color: #e2e8f8;
-  margin-bottom: 0.35rem;
+  letter-spacing: -0.02em;
+  color: #0f1124;
+  margin-bottom: 6px;
 }
 
 .ln-sub {
-  font-size: 0.78rem;
-  color: #6b7494;
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 500;
   margin-bottom: 1.8rem;
 }
 
+/* ── Error ────────────────────────────────────────────── */
 .ln-error {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: rgba(255, 77, 109, 0.08);
-  border: 1px solid rgba(255, 77, 109, 0.25);
+  gap: 8px;
+  background: #fef2f2;
+  border: 1.5px solid #fca5a5;
   border-radius: 10px;
-  color: #ff4d6d;
-  font-size: 0.78rem;
+  color: #ef4444;
+  font-size: 0.82rem;
+  font-weight: 600;
   padding: 0.75rem 1rem;
   margin-bottom: 1.2rem;
 }
 
+/* ── Form ─────────────────────────────────────────────── */
 .ln-form {
   display: flex;
   flex-direction: column;
@@ -111,79 +120,87 @@
 .ln-field {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 6px;
 }
 
 .ln-label {
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-  color: #6b7494;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6b7280;
 }
 
 .ln-input {
-  background: #0d1018;
-  border: 1px solid #222840;
+  background: #f9fafb;
+  border: 1.5px solid #e8eaf2;
   border-radius: 10px;
-  color: #e2e8f8;
-  font-family: 'DM Mono', monospace;
-  font-size: 0.9rem;
-  padding: 0.85rem 1rem;
+  color: #0f1124;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 0.82rem 1rem;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
   width: 100%;
 }
-.ln-input::placeholder { color: #3a4060; }
+.ln-input::placeholder { color: #d1d5db; }
 .ln-input:focus {
-  border-color: #f0c040;
-  box-shadow: 0 0 0 3px rgba(240, 192, 64, 0.08);
+  background: #ffffff;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
 }
 
+/* ── Button ───────────────────────────────────────────── */
 .ln-btn {
-  margin-top: 0.5rem;
+  margin-top: 6px;
   width: 100%;
   padding: 0.9rem;
   border-radius: 10px;
   border: none;
-  background: #f0c040;
-  color: #080a10;
+  background: #6366f1;
+  color: #ffffff;
   font-family: 'Syne', sans-serif;
   font-weight: 700;
   font-size: 0.92rem;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.18s;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 46px;
+  min-height: 48px;
+  box-shadow: 0 4px 14px rgba(99,102,241,0.28);
 }
 .ln-btn:hover:not(:disabled) {
-  background: #ffd060;
+  background: #4f46e5;
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(240, 192, 64, 0.25);
+  box-shadow: 0 8px 24px rgba(99,102,241,0.35);
 }
-.ln-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ln-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
 .ln-spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(8, 10, 16, 0.3);
-  border-top-color: #080a10;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #ffffff;
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation: ln-spin 0.7s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes ln-spin { to { transform: rotate(360deg); } }
 
+/* ── Register link ────────────────────────────────────── */
 .ln-register {
   text-align: center;
-  font-size: 0.78rem;
-  color: #6b7494;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #6b7280;
   margin-top: 1.4rem;
 }
 .ln-register-link {
-  color: #f0c040;
+  color: #6366f1;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 700;
   transition: color 0.15s;
 }
-.ln-register-link:hover { color: #ffd060; }
+.ln-register-link:hover { color: #4f46e5; }

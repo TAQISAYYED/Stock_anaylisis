@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
       const res = await api.get("/api/accounts/me/");
       setUser(res.data.username);
     } catch {
-      console.log("Could not fetch user");  // don't logout here!
+      console.log("Could not fetch user");  
     }
   };
 

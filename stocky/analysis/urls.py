@@ -1,16 +1,8 @@
 from django.urls import path
-from .views import (
-    PriceGraphView,
-    PERatioView,
-    VolumePortfolioView,
-    VolumeChartView,
-    DiscountedValueView,
-)
+from .views import PortfolioListView, Stage1ClusterView, Stage2SubClusterView
 
 urlpatterns = [
-    path('price-chart/', PriceGraphView.as_view()),
-    path('pe-ratio/', PERatioView.as_view()),
-    path('volume-portfolio/', VolumePortfolioView.as_view()),
-    path('volume-chart/', VolumeChartView.as_view()),
-    path('discounted-value/', DiscountedValueView.as_view()),
+    path("portfolios/",  PortfolioListView.as_view(),    name="analysis-portfolios"),
+    path("stage1/",      Stage1ClusterView.as_view(),    name="analysis-stage1"),
+    path("stage2/",      Stage2SubClusterView.as_view(), name="analysis-stage2"),
 ]

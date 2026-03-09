@@ -4,45 +4,39 @@ import StocksCard from "../components/StocksCard";
 import "./Portfolio.css";
 
 export default function Portfolio() {
-  const [portfolios, setPortfolios] = useState([]);
-  const [selectedPortfolio, setSelectedPortfolio] = useState(null);
-  const [stocks, setStocks] = useState([]);
-  const [stocksLoading, setStocksLoading] = useState(false);
+  const [portfolios,       setPortfolios]       = useState([]);
+  const [selectedPortfolio,setSelectedPortfolio]= useState(null);
+  const [stocks,           setStocks]           = useState([]);
+  const [stocksLoading,    setStocksLoading]    = useState(false);
 
-  const [showCreate, setShowCreate] = useState(false);
+  const [showCreate,       setShowCreate]       = useState(false);
   const [newPortfolioName, setNewPortfolioName] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [createError, setCreateError] = useState("");
+  const [creating,         setCreating]         = useState(false);
+  const [createError,      setCreateError]      = useState("");
 
-  useEffect(() => {
-    fetchPortfolios();
-  }, []);
+  const [showDeleteModal,  setShowDeleteModal]  = useState(false);
+  const [portfolioToDelete,setPortfolioToDelete]= useState(null);
+  const [deleting,         setDeleting]         = useState(false);
+  const [deleteError,      setDeleteError]      = useState("");
+
+  useEffect(() => { fetchPortfolios(); }, []);
 
   const fetchPortfolios = async () => {
     try {
-      const res = await api.get("/api/portfolio/portfolios/");
-      console.log("RAW RESPONSE:", res.data);
-      const data = res.data.results ?? res.data; // ✅ handles pagination
+      const res  = await api.get("/api/portfolio/portfolios/");
+      const data = res.data.results ?? res.data;
       setPortfolios(data);
-      if (data.length > 0) {
-        setSelectedPortfolio(data[0]);
-        fetchStocks(data[0].id);
-      }
-    } catch (err) {
-      console.error("Portfolio fetch error:", err);
-    }
+      if (data.length > 0) { setSelectedPortfolio(data[0]); fetchStocks(data[0].id); }
+    } catch (err) { console.error("Portfolio fetch error:", err); }
   };
 
   const fetchStocks = async (portfolioId) => {
     setStocksLoading(true);
     try {
       const res = await api.get(`/api/stocks/?portfolio=${portfolioId}`);
-      setStocks(res.data.results ?? res.data); // ✅ handles pagination
-    } catch (err) {
-      console.error("Stock fetch error:", err);
-    } finally {
-      setStocksLoading(false);
-    }
+      setStocks(res.data.results ?? res.data);
+    } catch (err) { console.error("Stock fetch error:", err); }
+    finally { setStocksLoading(false); }
   };
 
   const handleSelectPortfolio = (portfolio) => {
@@ -52,63 +46,70 @@ export default function Portfolio() {
 
   const handleCreatePortfolio = async () => {
     if (!newPortfolioName.trim()) return;
-    setCreating(true);
-    setCreateError("");
+    setCreating(true); setCreateError("");
     try {
-      const res = await api.post("/api/portfolio/portfolios/", {
-        name: newPortfolioName.trim(),
-      });
+      const res     = await api.post("/api/portfolio/portfolios/", { name: newPortfolioName.trim() });
       const created = res.data;
-      setPortfolios((prev) => [...prev, created]);
+      setPortfolios(prev => [...prev, created]);
       setSelectedPortfolio(created);
       setStocks([]);
       setNewPortfolioName("");
       setShowCreate(false);
     } catch (err) {
-      console.error("Create portfolio error:", err.response?.data || err);
       setCreateError(
         err.response?.data?.name?.[0] ||
         err.response?.data?.detail ||
         "Failed to create portfolio. Try a different name."
       );
-    } finally {
-      setCreating(false);
-    }
+    } finally { setCreating(false); }
   };
 
-  const priced = stocks.filter((s) => s.current_price);
-  const highestStock = priced.length
-    ? priced.reduce((a, b) => (a.current_price > b.current_price ? a : b))
-    : null;
-  const lowestStock = priced.length
-    ? priced.reduce((a, b) => (a.current_price < b.current_price ? a : b))
-    : null;
-  const gainers = stocks.filter((s) => s.day_change_pct > 0).length;
-  const losers  = stocks.filter((s) => s.day_change_pct < 0).length;
+  const handleDeleteClick = (e, portfolio) => {
+    e.stopPropagation();
+    setPortfolioToDelete(portfolio);
+    setDeleteError("");
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!portfolioToDelete) return;
+    setDeleting(true); setDeleteError("");
+    try {
+      await api.delete(`/api/portfolio/portfolios/${portfolioToDelete.id}/`);
+      const updated = portfolios.filter(p => p.id !== portfolioToDelete.id);
+      setPortfolios(updated);
+      if (selectedPortfolio?.id === portfolioToDelete.id) {
+        if (updated.length > 0) { setSelectedPortfolio(updated[0]); fetchStocks(updated[0].id); }
+        else { setSelectedPortfolio(null); setStocks([]); }
+      }
+      setShowDeleteModal(false);
+      setPortfolioToDelete(null);
+    } catch (err) {
+      setDeleteError(err.response?.data?.detail || "Failed to delete portfolio. Please try again.");
+    } finally { setDeleting(false); }
+  };
+
+  const priced       = stocks.filter(s => s.current_price);
+  const highestStock = priced.length ? priced.reduce((a,b) => a.current_price > b.current_price ? a : b) : null;
+  const lowestStock  = priced.length ? priced.reduce((a,b) => a.current_price < b.current_price ? a : b) : null;
+  const gainers      = stocks.filter(s => s.day_change_pct > 0).length;
+  const losers       = stocks.filter(s => s.day_change_pct < 0).length;
 
   return (
     <div className="pf-root">
       <div className="pf-bg-glow" />
 
-      {/* ── Sidebar ── */}
+      {/* ── Sidebar ──────────────────────────────────────── */}
       <aside className="pf-sidebar">
         <div className="pf-sidebar-header">
           <span className="pf-sidebar-title">Portfolios</span>
-          <button
-            className="pf-create-btn"
-            onClick={() => setShowCreate(true)}
-            title="New Portfolio"
-          >
-            +
-          </button>
+          <button className="pf-create-btn" onClick={() => setShowCreate(true)} title="New Portfolio">+</button>
         </div>
 
         <nav className="pf-nav">
-          {portfolios.length === 0 && (
-            <p className="pf-empty-nav">No portfolios yet.</p>
-          )}
-          {portfolios.map((p) => (
-            <button
+          {portfolios.length === 0 && <p className="pf-empty-nav">No portfolios yet.</p>}
+          {portfolios.map(p => (
+            <div
               key={p.id}
               className={`pf-nav-item ${selectedPortfolio?.id === p.id ? "active" : ""}`}
               onClick={() => handleSelectPortfolio(p)}
@@ -116,23 +117,21 @@ export default function Portfolio() {
               <span className="pf-nav-icon">◈</span>
               <span className="pf-nav-name">{p.name}</span>
               {selectedPortfolio?.id === p.id && <span className="pf-nav-dot" />}
-            </button>
+              <button className="pf-nav-delete" onClick={e => handleDeleteClick(e, p)} title={`Delete ${p.name}`}>🗑</button>
+            </div>
           ))}
         </nav>
 
-        <button
-          className="pf-new-portfolio-full"
-          onClick={() => setShowCreate(true)}
-        >
+        <button className="pf-new-portfolio-full" onClick={() => setShowCreate(true)}>
           <span>＋</span> New Portfolio
         </button>
       </aside>
 
-      {/* ── Main content ── */}
+      {/* ── Main ─────────────────────────────────────────── */}
       <main className="pf-main">
         {!selectedPortfolio ? (
           <div className="pf-empty-state">
-            <div className="pf-empty-icon">◈</div>
+            <div className="pf-empty-icon">📊</div>
             <h2>No Portfolio Selected</h2>
             <p>Create a portfolio to start tracking Indian stocks.</p>
             <button className="pf-empty-cta" onClick={() => setShowCreate(true)}>
@@ -143,7 +142,7 @@ export default function Portfolio() {
           <>
             <div className="pf-page-header">
               <div>
-                <p className="pf-page-label">ACTIVE PORTFOLIO</p>
+                <p className="pf-page-label">Active Portfolio</p>
                 <h1 className="pf-page-title">{selectedPortfolio.name}</h1>
               </div>
               <div className="pf-header-meta">
@@ -161,16 +160,12 @@ export default function Portfolio() {
                 </div>
                 <div className="pf-stat-card green">
                   <p className="pf-stat-label">Highest Price</p>
-                  <p className="pf-stat-value">
-                    ₹{highestStock?.current_price?.toLocaleString("en-IN")}
-                  </p>
+                  <p className="pf-stat-value">₹{highestStock?.current_price?.toLocaleString("en-IN")}</p>
                   <p className="pf-stat-sub">{highestStock?.ticker}</p>
                 </div>
                 <div className="pf-stat-card red">
                   <p className="pf-stat-label">Lowest Price</p>
-                  <p className="pf-stat-value">
-                    ₹{lowestStock?.current_price?.toLocaleString("en-IN")}
-                  </p>
+                  <p className="pf-stat-value">₹{lowestStock?.current_price?.toLocaleString("en-IN")}</p>
                   <p className="pf-stat-sub">{lowestStock?.ticker}</p>
                 </div>
                 <div className="pf-stat-card">
@@ -200,46 +195,57 @@ export default function Portfolio() {
         )}
       </main>
 
-      {/* ── Create Portfolio Modal ── */}
+      {/* ── Create Modal ─────────────────────────────────── */}
       {showCreate && (
         <div className="pf-modal-overlay" onClick={() => setShowCreate(false)}>
-          <div className="pf-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="pf-modal" onClick={e => e.stopPropagation()}>
             <div className="pf-modal-header">
               <h3>New Portfolio</h3>
-              <button className="pf-modal-close" onClick={() => setShowCreate(false)}>
-                ✕
-              </button>
+              <button className="pf-modal-close" onClick={() => setShowCreate(false)}>✕</button>
             </div>
-            <p className="pf-modal-sub">
-              Give your portfolio a name to start tracking stocks.
-            </p>
+            <p className="pf-modal-sub">Give your portfolio a name to start tracking stocks.</p>
             <input
               className="pf-modal-input"
               type="text"
               placeholder="e.g. Tech Stocks, Blue Chip, Long Term…"
               value={newPortfolioName}
-              onChange={(e) => setNewPortfolioName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleCreatePortfolio()}
+              onChange={e => setNewPortfolioName(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && handleCreatePortfolio()}
               autoFocus
             />
             {createError && <p className="pf-modal-error">{createError}</p>}
             <div className="pf-modal-actions">
-              <button
-                className="pf-modal-cancel"
-                onClick={() => {
-                  setShowCreate(false);
-                  setCreateError("");
-                  setNewPortfolioName("");
-                }}
-              >
+              <button className="pf-modal-cancel" onClick={() => { setShowCreate(false); setCreateError(""); setNewPortfolioName(""); }}>
                 Cancel
               </button>
-              <button
-                className="pf-modal-confirm"
-                onClick={handleCreatePortfolio}
-                disabled={creating || !newPortfolioName.trim()}
-              >
+              <button className="pf-modal-confirm" onClick={handleCreatePortfolio} disabled={creating || !newPortfolioName.trim()}>
                 {creating ? "Creating…" : "Create Portfolio"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Delete Modal ─────────────────────────────────── */}
+      {showDeleteModal && (
+        <div className="pf-modal-overlay" onClick={() => { setShowDeleteModal(false); setDeleteError(""); }}>
+          <div className="pf-modal pf-delete-modal" onClick={e => e.stopPropagation()}>
+            <div className="pf-modal-header">
+              <h3>Delete Portfolio</h3>
+              <button className="pf-modal-close" onClick={() => { setShowDeleteModal(false); setDeleteError(""); }}>✕</button>
+            </div>
+            <div className="pf-delete-warning">
+              <span className="pf-delete-icon">⚠</span>
+              <div>
+                <p className="pf-delete-name">"{portfolioToDelete?.name}"</p>
+                <p className="pf-modal-sub">This will permanently delete the portfolio and all its stocks. This action cannot be undone.</p>
+              </div>
+            </div>
+            {deleteError && <p className="pf-modal-error">{deleteError}</p>}
+            <div className="pf-modal-actions">
+              <button className="pf-modal-cancel" onClick={() => { setShowDeleteModal(false); setDeleteError(""); }} disabled={deleting}>Cancel</button>
+              <button className="pf-modal-delete-confirm" onClick={handleConfirmDelete} disabled={deleting}>
+                {deleting ? "Deleting…" : "Yes, Delete"}
               </button>
             </div>
           </div>

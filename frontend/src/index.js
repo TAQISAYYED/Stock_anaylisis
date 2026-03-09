@@ -5,16 +5,16 @@ import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import "./styles/theme.css";
-import { AuthProvider } from './context/AuthContext';  // ← add this
+import { AuthProvider } from './context/AuthContext';  
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider>        {/* ← add this */}
+      <AuthProvider>       
         <App />
-      </AuthProvider>       {/* ← add this */}
+      </AuthProvider>       
     </BrowserRouter>
   </React.StrictMode>
 );

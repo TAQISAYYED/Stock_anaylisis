@@ -1,29 +1,56 @@
+
 .analysis-container {
-  display: flex;
-  gap: 25px;
-  margin-bottom: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
 }
 
 .analysis-card {
-  flex: 1;
-  background: var(--card-white);
-  padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  transition: 0.3s ease;
-  border-top: 5px solid var(--wealth-green);
+  background: #ffffff;
+  padding: 22px 24px;
+  border-radius: 12px;
+  border: 1.5px solid #e8eaf2;
+  border-left: 4px solid #6366f1;
+  box-shadow: 0 2px 16px rgba(15,17,36,0.07);
+  transition: transform 0.18s, box-shadow 0.18s;
 }
 
 .analysis-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(15,17,36,0.11);
+}
+
+.analysis-card.risk-card {
+  border-left-color: #f59e0b;
 }
 
 .analysis-card h3 {
-  color: var(--corporate-blue);
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6b7280;
   margin-bottom: 10px;
 }
 
 .analysis-card p {
-  font-size: 24px;
-  font-weight: 600;
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0f1124;
+  line-height: 1;
+}
+
+.risk-high {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  color: #f59e0b !important;
+  background: #fef3c7;
+  border: 1.5px solid #fde68a;
+  border-radius: 8px;
+  padding: 6px 14px;
+  display: inline-block;
 }

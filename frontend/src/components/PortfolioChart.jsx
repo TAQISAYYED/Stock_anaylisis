@@ -9,18 +9,14 @@ export default function PortfolioChart() {
   const [stocks, setStocks] = useState([]);
   const [loadingStocks, setLoadingStocks] = useState(false);
 
-  useEffect(() => {
-    fetchPortfolios();
-  }, []);
+  useEffect(() => { fetchPortfolios(); }, []);
 
   const fetchPortfolios = async () => {
     try {
-      const res = await api.get("/api/portfolio/portfolios/");
+      const res  = await api.get("/api/portfolio/portfolios/");
       const data = res.data.results ?? res.data;
       setPortfolios(data);
-    } catch (error) {
-      console.error("Portfolio fetch error:", error);
-    }
+    } catch (error) { console.error("Portfolio fetch error:", error); }
   };
 
   const handlePortfolioChange = async (portfolioId) => {
@@ -30,34 +26,28 @@ export default function PortfolioChart() {
     if (!portfolioId) { setStocks([]); return; }
     setLoadingStocks(true);
     try {
-      const res = await api.get(`/api/stocks/?portfolio=${portfolioId}`);
+      const res  = await api.get(`/api/stocks/?portfolio=${portfolioId}`);
       const data = res.data.results ?? res.data;
       setStocks(data);
-    } catch (error) {
-      console.error("Stock fetch error:", error);
-    } finally {
-      setLoadingStocks(false);
-    }
+    } catch (error) { console.error("Stock fetch error:", error); }
+    finally { setLoadingStocks(false); }
   };
 
-  const priced = stocks.filter((s) => s.current_price);
+  const priced       = stocks.filter((s) => s.current_price);
   const highestStock = priced.length
-    ? priced.reduce((a, b) => (a.current_price > b.current_price ? a : b))
-    : null;
-  const lowestStock = priced.length
-    ? priced.reduce((a, b) => (a.current_price < b.current_price ? a : b))
-    : null;
+    ? priced.reduce((a, b) => (a.current_price > b.current_price ? a : b)) : null;
+  const lowestStock  = priced.length
+    ? priced.reduce((a, b) => (a.current_price < b.current_price ? a : b)) : null;
 
   return (
     <div className="pc-root">
       <div className="pc-bg-glow" />
-
       <div className="pc-inner">
 
-        {/* ── Header ── */}
+        
         <div className="pc-header">
           <div>
-            <p className="pc-label">PORTFOLIO OVERVIEW</p>
+            <p className="pc-label">Portfolio Overview</p>
             <h1 className="pc-title">
               {selectedName ? selectedName : "Select a Portfolio"}
             </h1>
@@ -69,9 +59,9 @@ export default function PortfolioChart() {
           )}
         </div>
 
-        {/* ── Dropdown ── */}
+        
         <div className="pc-select-wrap">
-          <span className="pc-select-label">PORTFOLIO</span>
+          <span className="pc-select-label">Portfolio</span>
           <div className="pc-select-box">
             <select
               className="pc-dropdown"
@@ -80,16 +70,14 @@ export default function PortfolioChart() {
             >
               <option value="">— Select Portfolio —</option>
               {portfolios.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
+                <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
             <span className="pc-select-arrow">▾</span>
           </div>
         </div>
 
-        {/* ── Stats ── */}
+        
         {selectedPortfolio && priced.length > 0 && (
           <div className="pc-stats-row">
             <div className="pc-stat">
@@ -117,11 +105,11 @@ export default function PortfolioChart() {
           </div>
         )}
 
-        {/* ── Table ── */}
+        
         {selectedPortfolio && (
           <div className="pc-table-wrap">
             <div className="pc-table-header">
-              <span className="pc-table-title">Indian Stocks in Portfolio</span>
+              <span className="pc-table-title">Stocks in Portfolio</span>
               <span className="pc-table-badge">{stocks.length} stocks</span>
             </div>
 
@@ -132,21 +120,21 @@ export default function PortfolioChart() {
               </div>
             ) : stocks.length === 0 ? (
               <div className="pc-empty">
-                <p className="pc-empty-icon">◈</p>
+                <p className="pc-empty-icon">📊</p>
                 <p>No stocks in this portfolio.</p>
               </div>
             ) : (
               <table className="pc-table">
                 <thead>
                   <tr>
-                    <th>SYMBOL</th>
-                    <th>COMPANY</th>
-                    <th>PRICE</th>
-                    <th>DAY CHG</th>
-                    <th>DAY HIGH</th>
-                    <th>DAY LOW</th>
-                    <th>52W HIGH</th>
-                    <th>52W LOW</th>
+                    <th>Symbol</th>
+                    <th>Company</th>
+                    <th>Price</th>
+                    <th>Day Chg</th>
+                    <th>Day High</th>
+                    <th>Day Low</th>
+                    <th>52W High</th>
+                    <th>52W Low</th>
                     <th>P/E</th>
                   </tr>
                 </thead>
@@ -155,30 +143,23 @@ export default function PortfolioChart() {
                     const pos = stock.day_change_pct > 0;
                     const neg = stock.day_change_pct < 0;
                     return (
-                      <tr
-                        key={stock.id}
-                        className="pc-row"
-                        style={{ animationDelay: `${i * 40}ms` }}
-                      >
-                        <td>
-                          <span className="pc-ticker">{stock.ticker}</span>
-                        </td>
+                      <tr key={stock.id} className="pc-row"
+                        style={{ animationDelay: `${i * 40}ms` }}>
+                        <td><span className="pc-ticker">{stock.ticker}</span></td>
                         <td className="pc-company">
-                          {stock.company_name !== stock.ticker
-                            ? stock.company_name
-                            : "—"}
+                          {stock.company_name !== stock.ticker ? stock.company_name : "—"}
                         </td>
                         <td>
-                          <span className={`pc-price ${pos ? "green" : neg ? "red" : ""}`}>
+                          <span className={`pc-price ${pos?"green":neg?"red":""}`}>
                             {stock.current_price
                               ? `₹${stock.current_price.toLocaleString("en-IN")}`
                               : "N/A"}
                           </span>
                         </td>
                         <td>
-                          <span className={`pc-change ${pos ? "green" : neg ? "red" : "na"}`}>
+                          <span className={`pc-change ${pos?"green":neg?"red":"na"}`}>
                             {stock.day_change_pct != null
-                              ? `${pos ? "+" : ""}${stock.day_change_pct.toFixed(2)}%`
+                              ? `${pos?"+":""}${stock.day_change_pct.toFixed(2)}%`
                               : "—"}
                           </span>
                         </td>
@@ -194,9 +175,7 @@ export default function PortfolioChart() {
                         <td className="pc-num red-soft">
                           {stock.week_52_low ? `₹${stock.week_52_low.toLocaleString("en-IN")}` : "—"}
                         </td>
-                        <td className="pc-num">
-                          {stock.pe_ratio ?? "—"}
-                        </td>
+                        <td className="pc-num">{stock.pe_ratio ?? "—"}</td>
                       </tr>
                     );
                   })}

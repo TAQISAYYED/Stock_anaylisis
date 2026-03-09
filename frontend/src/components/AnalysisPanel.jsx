@@ -1,8 +1,7 @@
 import "./AnalysisPanel.css";
 
 export default function AnalysisPanel({ portfolios = [], stocks = [] }) {
-
-  const totalStocks = stocks.length;
+  const totalStocks     = stocks.length;
   const totalPortfolios = portfolios.length;
 
   return (

@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'analysis',
     'accounts',
     'goldsilver',   
+    'Forecasting',
 ]
 
 MIDDLEWARE = [

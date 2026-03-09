@@ -7,8 +7,10 @@ import Portfolio from "./pages/Portfolio";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import GoldSilver from "./pages/GoldSilver";
+import ClusterAnalysis from "./pages/ClusterAnalysis";
+import Forecasting from "./pages/Forecasting";
 
-// Protects routes — redirects to /login if not authenticated
+
 function PrivateRoute({ children }) {
   const { user } = useContext(AuthContext);
   const token = localStorage.getItem("access");
@@ -16,7 +18,7 @@ function PrivateRoute({ children }) {
   return children;
 }
 
-// Redirects logged-in users away from login/register
+
 function PublicRoute({ children }) {
   const { user } = useContext(AuthContext);
   const token = localStorage.getItem("access");
@@ -31,11 +33,11 @@ function App() {
 
   return (
     <>
-      {/* Only show Navbar when logged in */}
+      
       {isLoggedIn && <Navbar />}
 
       <Routes>
-        {/* Public routes */}
+        
         <Route
           path="/login"
           element={
@@ -78,8 +80,23 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/cluster-analysis"
+          element={
+            <PrivateRoute>
+              <ClusterAnalysis />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/forecasting"
+          element={
+            <PrivateRoute>
+              <Forecasting />
+            </PrivateRoute>
+          }
+        />
 
-        {/* Catch all — redirect to login */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </>

@@ -1,14 +1,13 @@
-
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const [form, setForm] = useState({ username: "", password: "" });
-  const [error, setError] = useState("");
+  const { login }    = useContext(AuthContext);
+  const navigate     = useNavigate();
+  const [form,    setForm]    = useState({ username: "", password: "" });
+  const [error,   setError]   = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -31,10 +30,11 @@ const Login = () => {
       <div className="ln-bg-glow" />
 
       <div className="ln-card">
+
         {/* Logo */}
         <div className="ln-logo">
           <span className="ln-logo-dot" />
-          WealthyTrade
+          Wealthy<span style={{ color: "#6366f1" }}>Trade</span>
         </div>
 
         <h1 className="ln-title">Welcome back</h1>
@@ -48,7 +48,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="ln-form">
           <div className="ln-field">
-            <label className="ln-label">USERNAME</label>
+            <label className="ln-label">Username</label>
             <input
               type="text"
               className="ln-input"
@@ -61,7 +61,7 @@ const Login = () => {
           </div>
 
           <div className="ln-field">
-            <label className="ln-label">PASSWORD</label>
+            <label className="ln-label">Password</label>
             <input
               type="password"
               className="ln-input"
@@ -73,24 +73,14 @@ const Login = () => {
             />
           </div>
 
-          <button
-            type="submit"
-            className="ln-btn"
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="ln-spinner" />
-            ) : (
-              "Sign In"
-            )}
+          <button type="submit" className="ln-btn" disabled={loading}>
+            {loading ? <span className="ln-spinner" /> : "Sign In →"}
           </button>
         </form>
 
         <p className="ln-register">
           No account?{" "}
-          <Link to="/register" className="ln-register-link">
-            Create one
-          </Link>
+          <Link to="/register" className="ln-register-link">Create one</Link>
         </p>
       </div>
     </div>

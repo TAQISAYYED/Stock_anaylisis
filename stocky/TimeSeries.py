@@ -29,7 +29,7 @@ from sklearn.preprocessing import StandardScaler
 # ══════════════════════════════════════════════════════════════════════════════
 print("Fetching BTC-USD hourly data from Yahoo Finance...")
 ticker = yf.Ticker("BTC-USD")
-raw    = ticker.history(period="60d", interval="1d")   # max allowed for 1h
+raw    = ticker.history(period="7d", interval="1h")   # max allowed for 1h
 
 if raw.empty:
     raise ValueError("No data returned. Check internet connection.")

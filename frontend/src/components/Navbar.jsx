@@ -17,35 +17,21 @@ export default function Navbar() {
 
   return (
     <nav className="nb-root">
-      {/* Logo */}
       <div className="nb-logo">
         <span className="nb-logo-dot" />
-        WealthyTrade
+        Wealthy<span className="nb-logo-accent">Trade</span>
       </div>
 
-      {/* Nav links */}
+      
       <div className="nb-links">
-        <Link
-          to="/"
-          className={`nb-link ${isActive("/") ? "active" : ""}`}
-        >
-          Dashboard
-        </Link>
-        <Link
-          to="/portfolio"
-          className={`nb-link ${isActive("/portfolio") ? "active" : ""}`}
-        >
-          Portfolio
-        </Link>
-        <Link
-          to="/goldsilver"
-          className={`nb-link ${isActive("/goldsilver") ? "active" : ""}`}
-        >
-          Gold &amp; Silver
-        </Link>
+        <Link to="/"                 className={`nb-link ${isActive("/")                  ? "active" : ""}`}>Dashboard</Link>
+        <Link to="/portfolio"        className={`nb-link ${isActive("/portfolio")         ? "active" : ""}`}>Portfolio</Link>
+        <Link to="/goldsilver"       className={`nb-link ${isActive("/goldsilver")        ? "active" : ""}`}>Gold &amp; Silver</Link>
+        <Link to="/cluster-analysis" className={`nb-link ${isActive("/cluster-analysis")  ? "active" : ""}`}>Cluster Analysis</Link>
+        <Link to="/forecasting"      className={`nb-link ${isActive("/forecasting")       ? "active" : ""}`}>Forecasting</Link>
       </div>
 
-      {/* Right side — user + logout */}
+    
       <div className="nb-right">
         {user && (
           <span className="nb-user">

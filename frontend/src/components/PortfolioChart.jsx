@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import "./portfoliochart.css";
+import "./PortfolioChart.css";
 
 export default function PortfolioChart() {
   const [portfolios, setPortfolios] = useState([]);

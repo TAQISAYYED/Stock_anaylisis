@@ -96,7 +96,7 @@
   background: #fff;
 }
 
-/* ── Buttons ──────────────────────────────────────────── */
+
 .ca-btn-primary {
   background: #6366f1;
   color: #fff;
@@ -264,7 +264,7 @@
 .ca-cluster-card:nth-child(3) .ca-cluster-card-title { color: #f59e0b; }
 .ca-cluster-card:nth-child(4) .ca-cluster-card-title { color: #8b5cf6; }
 
-/
+
 .ca-ticker-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
 .ca-ticker-pill {
   background: #fff;

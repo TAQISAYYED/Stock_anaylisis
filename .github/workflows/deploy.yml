@@ -1,0 +1,44 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches:
+      - main  # change to 'master' if that's your branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VM via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            # Pull latest code
+            cd ~/Stock_anaylisis
+            git pull origin main
+
+            # Activate venv and install dependencies
+            cd ~/Stock_anaylisis/stocky
+            source venv/bin/activate
+            pip install -r requirements.txt --break-system-packages
+
+            # Run migrations
+            python manage.py migrate
+
+            # Collect static files
+            python manage.py collectstatic --noinput
+
+            # Rebuild frontend
+            cd ~/Stock_anaylisis/frontend
+            npm install
+            npm run build
+
+            # Restart PM2
+            pm2 restart all
+            pm2 save
+
+            echo "✅ Deployment complete!"
